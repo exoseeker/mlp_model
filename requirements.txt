@@ -1,0 +1,12 @@
+# Keep NumPy <2.0 so PyTorch 2.2.2 wheels load cleanly
+numpy==1.26.4
+
+# Core data/ML stack
+pandas==2.3.3
+scikit-learn==1.7.2
+scipy==1.15.3
+joblib==1.5.2
+tqdm==4.66.4
+
+# PyTorch CPU (works fine for this project)
+torch==2.2.2
