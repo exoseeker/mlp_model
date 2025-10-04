@@ -10,3 +10,6 @@ tqdm==4.66.4
 
 # PyTorch CPU (works fine for this project)
 torch==2.2.2
+
+fastapi
+uvicorn
