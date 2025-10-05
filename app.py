@@ -1,14 +1,29 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import os
 from model_script import predict_single
 
-# load once at startup
+# Directory where your model artifacts are stored
 ARTIFACTS_DIR = "./artifacts"  # change if needed
 
-app = FastAPI()
+app = FastAPI(title="ExoSeeker ML Prediction Service")
 
-# Define request schema
+# Allow CORS from local dev + GitHub Pages
+origins = [
+    "http://localhost:8080",
+    "https://exoseeker.github.io"
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],   # allow GET, POST, etc.
+    allow_headers=["*"],   # allow all headers
+)
+
+# Define the expected request schema
 class Features(BaseModel):
     koi_period: float
     koi_duration: float
@@ -26,12 +41,21 @@ class Features(BaseModel):
     koi_fpflag_co: float
     koi_fpflag_ec: float
 
+@app.get("/")
+def root():
+    return {"message": "FastAPI ML service running!"}
+
 @app.post("/predict")
 async def predict(features: Features):
-    # Convert to dict for predict_single
+    """
+    Run prediction on a single planet's features.
+    """
     feature_dict = features.dict()
-    label, probs = predict_single(ARTIFACTS_DIR, **feature_dict)
-    return {
-        "prediction": label,
-        "probabilities": probs
-    }
+    try:
+        label, probs = predict_single(ARTIFACTS_DIR, **feature_dict)
+        return {
+            "prediction": label,
+            "probabilities": probs
+        }
+    except Exception as e:
+        return {"error": str(e)}
