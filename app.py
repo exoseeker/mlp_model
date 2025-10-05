@@ -10,14 +10,14 @@ ARTIFACTS_DIR = "./artifacts"  # change if needed
 app = FastAPI(title="ExoSeeker ML Prediction Service")
 
 # Allow CORS from local dev + GitHub Pages
-origins = [
-    "http://localhost:8080",
-    "https://exoseeker.github.io"
-]
+# origins = [
+#     "http://localhost:8080",
+#     "https://exoseeker.github.io"
+# ]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins="*",
     allow_credentials=True,
     allow_methods=["*"],   # allow GET, POST, etc.
     allow_headers=["*"],   # allow all headers
